@@ -1,0 +1,32 @@
+services:
+  api:
+    container_name: task-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5100:8080"
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=tasksdb;Username=postgres;Password=Postgres@123!;"
+    networks:
+      - tasknet
+
+  postgres:
+    image: postgres:15
+    container_name: task-db
+    restart: always
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Postgres@123!
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - tasknet
+volumes:
+  postgres-data:
